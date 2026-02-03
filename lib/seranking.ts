@@ -29,6 +29,7 @@ import type {
   IndividualBacklink,
   RefDomainChange,
   PageAuthorityPoint,
+  SubscriptionInfo,
 } from './types';
 import { calculateCredits, countRecords } from './credits';
 
@@ -153,6 +154,30 @@ export class SeRankingClient {
    */
   getTotalCredits(): number {
     return this.apiLogs.reduce((sum, log) => sum + (log.credits || 0), 0);
+  }
+
+  /**
+   * Get subscription info (costs 0 credits)
+   */
+  async getSubscription(): Promise<SubscriptionInfo> {
+    const response = await this.request<{
+      subscription_info: {
+        status: string;
+        start_date: string;
+        expiraton_date: string; // API has typo: "expiraton" not "expiration"
+        units_limit: number;
+        units_left: string | number;
+      };
+    }>('/account/subscription');
+
+    const info = response.subscription_info;
+    return {
+      status: info.status,
+      startDate: info.start_date,
+      expirationDate: info.expiraton_date, // API typo
+      unitsLimit: info.units_limit,
+      unitsLeft: parseFloat(String(info.units_left)),
+    };
   }
 
   private async request<T>(

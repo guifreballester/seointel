@@ -49,6 +49,9 @@ export const CREDIT_COSTS: Record<string, { perRequest: number; perRecord: numbe
   '/keywords/similar': { perRequest: 0, perRecord: 10 },
   '/keywords/questions': { perRequest: 0, perRecord: 10 },
   '/keywords/long-tail': { perRequest: 0, perRecord: 1 },
+
+  // Account
+  '/account/subscription': { perRequest: 0, perRecord: 0 },
 };
 
 export function calculateCredits(endpoint: string, recordCount: number): number {

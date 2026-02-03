@@ -38,6 +38,7 @@ import type {
   IndividualBacklink,
   RefDomainChange,
   PageAuthorityPoint,
+  SubscriptionInfo,
 } from './types';
 
 // Re-export store functions
@@ -571,6 +572,9 @@ export async function generateReport(
     const apiLogs = client.getApiLogs();
     const totalCredits = client.getTotalCredits();
 
+    // Fetch subscription info (0 credits) for credits display tooltip
+    const subscriptionInfo = await client.getSubscription().catch(() => null);
+
     const report = compileReport({
       backlinksSummary,
       backlinksAuthority,
@@ -622,6 +626,8 @@ export async function generateReport(
       apiLogs,
       // Total credits consumed
       totalCredits,
+      // Subscription info for credits tooltip
+      subscriptionInfo,
     });
 
     updateProgress('Report ready!', 100);
@@ -683,6 +689,8 @@ interface CompileReportInput {
   apiLogs: ApiResponseLog[];
   // Total credits consumed
   totalCredits: number;
+  // Subscription info for credits tooltip
+  subscriptionInfo: SubscriptionInfo | null;
 }
 
 // Country code to name mapping (ISO 3166-1 alpha-2)
@@ -1054,6 +1062,7 @@ function compileReport(input: CompileReportInput): ReportData {
     },
     apiResponses: apiLogs,
     totalCredits,
+    subscriptionInfo: input.subscriptionInfo || undefined,
   };
 }
 

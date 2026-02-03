@@ -445,6 +445,7 @@ export interface ReportData {
   };
   apiResponses?: ApiResponseLog[];
   totalCredits?: number;
+  subscriptionInfo?: SubscriptionInfo;
 }
 
 // API Response logging for developer inspection
@@ -456,6 +457,15 @@ export interface ApiResponseLog {
   timestamp: string;
   duration?: number;
   credits?: number;
+}
+
+// Subscription info for credits display
+export interface SubscriptionInfo {
+  status: string;
+  startDate: string;
+  expirationDate: string;
+  unitsLimit: number;
+  unitsLeft: number;
 }
 
 // ============================================================

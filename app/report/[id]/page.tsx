@@ -179,10 +179,34 @@ export default function ReportPage() {
                     })}
                   </span>
                   <span className="text-gray-300">|</span>
-                  <span className="flex items-center gap-1">
-                    <Coins className="w-4 h-4" />
-                    {(data.totalCredits || 0).toLocaleString()} credits used
-                  </span>
+                  <div className="relative group">
+                    <span className="flex items-center gap-1 cursor-help">
+                      <Coins className="w-4 h-4" />
+                      {(data.totalCredits || 0).toLocaleString()} credits used
+                    </span>
+                    {data.subscriptionInfo && (
+                      <div className="absolute left-0 top-full mt-2 w-72 bg-gray-900 text-white text-xs rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 shadow-lg">
+                        <div className="text-gray-400 text-center mb-2 pb-2 border-b border-gray-700">
+                          Period: {new Date(data.subscriptionInfo.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(data.subscriptionInfo.expirationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <div className="space-y-2">
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Total:</span>
+                            <span className="font-medium">{data.subscriptionInfo.unitsLimit.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Used:</span>
+                            <span className="font-medium">{Math.round(data.subscriptionInfo.unitsLimit - data.subscriptionInfo.unitsLeft).toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-gray-700 pt-2">
+                            <span className="text-gray-400">This report:</span>
+                            <span className="font-medium">{(data.totalCredits || 0).toLocaleString()}</span>
+                          </div>
+                        </div>
+                        <div className="absolute -top-1 left-4 w-2 h-2 bg-gray-900 transform rotate-45"></div>
+                      </div>
+                    )}
+                  </div>
                   <span className="text-gray-300">|</span>
                   <a
                     href="https://seranking.com/api"
