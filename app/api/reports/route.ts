@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { after } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { validateDomain, cleanDomain } from '@/lib/utils';
 import { createSeRankingClient } from '@/lib/seranking';
 import { generateReport, setReport, updateReportProgress } from '@/lib/report-generator';
 import { generateMockReport } from '@/lib/mock-data';
 import type { Report } from '@/lib/types';
+
+export const maxDuration = 300; // 5 minutes max for report generation
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,8 +60,8 @@ export async function POST(request: NextRequest) {
     // Try to create API client
     const client = createSeRankingClient(apiKey, isApiKeyMode);
 
-    // Generate report in background
-    (async () => {
+    // Generate report in background using after() to keep task alive in serverless
+    after(async () => {
       try {
         await updateReportProgress(reportId, {
           status: 'processing',
@@ -116,7 +119,7 @@ export async function POST(request: NextRequest) {
           error: error instanceof Error ? error.message : 'Unknown error',
         });
       }
-    })();
+    });
 
     return NextResponse.json({
       id: reportId,
